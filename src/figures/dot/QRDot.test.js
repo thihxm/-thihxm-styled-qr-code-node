@@ -1,7 +1,7 @@
-import QRDot from './QRDot';
+import { Canvas } from '@napi-rs/canvas';
 import fs from 'fs';
 import path from 'path';
-import { Canvas } from 'skia-canvas/lib';
+import QRDot from './QRDot';
 
 describe('Test QRDot class', () => {
   const canvasSize = 100;

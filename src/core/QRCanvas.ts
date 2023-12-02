@@ -1,17 +1,19 @@
-import calculateImageSize from '../tools/calculateImageSize.js';
-import errorCorrectionPercents from '../constants/errorCorrectionPercents.js';
-import QRDot from '../figures/dot/QRDot.js';
-import QRCornerSquare from '../figures/cornerSquare/QRCornerSquare.js';
-import QRCornerDot from '../figures/cornerDot/QRCornerDot.js';
-import defaultOptions, { RequiredOptions } from './QROptions.js';
-import gradientTypes from '../constants/gradientTypes.js';
-import { QRCode, Gradient, FilterFunction, Options } from '../types';
-import getMode from '../tools/getMode.js';
-import { Canvas, CanvasRenderingContext2D, ExportFormat, RenderOptions, loadImage, Image } from 'skia-canvas';
-import qrcode from 'qrcode-generator';
+import { AvifConfig, Canvas, Image, SKRSContext2D, loadImage } from '@napi-rs/canvas';
 import { promises as fs } from 'fs';
+import qrcode from 'qrcode-generator';
+import errorCorrectionPercents from '../constants/errorCorrectionPercents.js';
+import gradientTypes from '../constants/gradientTypes.js';
+import QRCornerDot from '../figures/cornerDot/QRCornerDot.js';
+import QRCornerSquare from '../figures/cornerSquare/QRCornerSquare.js';
+import QRDot from '../figures/dot/QRDot.js';
+import calculateImageSize from '../tools/calculateImageSize.js';
+import getMode from '../tools/getMode.js';
 import mergeDeep from '../tools/merge.js';
 import sanitizeOptions from '../tools/sanitizeOptions.js';
+import { Extension, FilterFunction, Gradient, Options, QRCode } from '../types';
+import defaultOptions, { RequiredOptions } from './QROptions.js';
+
+type ExportFormat = Extension;
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -63,7 +65,7 @@ export default class QRCanvas {
     this.created = this.drawQR();
   }
 
-  get context(): CanvasRenderingContext2D {
+  get context(): SKRSContext2D {
     return this._canvas.getContext('2d');
   }
 
@@ -107,8 +109,8 @@ export default class QRCanvas {
       const maxHiddenDots = Math.floor(coverLevel * count * count);
 
       drawImageSize = calculateImageSize({
-        originalWidth: this._image.width,
-        originalHeight: this._image.height,
+        originalWidth: this._image!.width,
+        originalHeight: this._image!.height,
         maxHiddenDots,
         maxHiddenAxisDots: count - 14,
         dotSize
@@ -414,13 +416,13 @@ export default class QRCanvas {
     y,
     size
   }: {
-    context: CanvasRenderingContext2D;
+    context: SKRSContext2D;
     options: Gradient;
     additionalRotation: number;
     x: number;
     y: number;
     size: number;
-  }): CanvasGradient {
+  }) {
     let gradient;
 
     if (options.type === gradientTypes.radial) {
@@ -470,9 +472,9 @@ export default class QRCanvas {
    * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    */
-  async toBuffer(format: ExportFormat = 'png', options?: RenderOptions): Promise<Buffer> {
+  async toBuffer(format: ExportFormat = 'png', options?: AvifConfig): Promise<Buffer> {
     await this.created;
-    return this._canvas.toBuffer(format, options);
+    return this._canvas.toBuffer(format as any, options);
   }
 
   /**
@@ -481,9 +483,9 @@ export default class QRCanvas {
    * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    */
-  async toDataUrl(format: ExportFormat = 'png', options?: RenderOptions): Promise<string> {
+  async toDataUrl(format: ExportFormat = 'png', options?: AvifConfig): Promise<string> {
     await this.created;
-    return this._canvas.toDataURL(format, options);
+    return this._canvas.toDataURL(format as any, options);
   }
 
   /**
@@ -494,8 +496,8 @@ export default class QRCanvas {
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    * @returns a promise that resolves once the file was written to disk
    */
-  async toFile(filePath: string, format: ExportFormat = 'png', options?: RenderOptions): Promise<void> {
+  async toFile(filePath: string, format: ExportFormat = 'png', options?: AvifConfig): Promise<void> {
     await this.created;
-    return fs.writeFile(filePath, await this._canvas.toBuffer(format, options));
+    return fs.writeFile(filePath, await this._canvas.toBuffer(format as any, options));
   }
 }

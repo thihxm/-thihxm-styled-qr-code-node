@@ -1,6 +1,6 @@
 {
-  "name": "@loskir/styled-qr-code-node",
-  "version": "1.5.1",
+  "name": "@thihxm/styled-qr-code-node",
+  "version": "1.5.2",
   "description": "Add a style and an image to your QR code",
   "files": [
     "dist"
@@ -16,10 +16,11 @@
     }
   },
   "dependencies": {
-    "qrcode-generator": "^1.4.4",
-    "skia-canvas": "^1.0.0"
+    "@napi-rs/canvas": "^0.1.44",
+    "qrcode-generator": "^1.4.4"
   },
   "devDependencies": {
+    "@types/node": "^20",
     "@typescript-eslint/eslint-plugin": "^5.35.1",
     "@typescript-eslint/parser": "^5.35.1",
     "eslint": "^8.22.0",
