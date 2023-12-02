@@ -10,10 +10,10 @@ import calculateImageSize from '../tools/calculateImageSize.js';
 import getMode from '../tools/getMode.js';
 import mergeDeep from '../tools/merge.js';
 import sanitizeOptions from '../tools/sanitizeOptions.js';
-import { Extension, FilterFunction, Gradient, Options, QRCode } from '../types';
+import { FilterFunction, Gradient, Options, QRCode } from '../types';
 import defaultOptions, { RequiredOptions } from './QROptions.js';
 
-type ExportFormat = Extension;
+type ExportFormat = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/avif';
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -469,10 +469,10 @@ export default class QRCanvas {
   /**
    * Create a buffer object with the content of the qr code
    *
-   * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
+   * @param format Supported types: "image/png", "image/jpeg", "image/webp", "image/avif"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    */
-  async toBuffer(format: ExportFormat = 'png', options?: AvifConfig): Promise<Buffer> {
+  async toBuffer(format: ExportFormat = 'image/png', options?: AvifConfig): Promise<Buffer> {
     await this.created;
     return this._canvas.toBuffer(format as any, options);
   }
@@ -480,10 +480,10 @@ export default class QRCanvas {
   /**
    *  Create a data url with the content of the qr code
    *
-   * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
+   * @param format Supported types: "image/png", "image/jpeg", "image/webp", "image/avif"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    */
-  async toDataUrl(format: ExportFormat = 'png', options?: AvifConfig): Promise<string> {
+  async toDataUrl(format: ExportFormat = 'image/png', options?: AvifConfig): Promise<string> {
     await this.created;
     return this._canvas.toDataURL(format as any, options);
   }
@@ -492,11 +492,11 @@ export default class QRCanvas {
    * Create a file of the qr code and save it to disk
    *
    * @param filePath file path including extension
-   * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
+   * @param format Supported types: "image/png", "image/jpeg", "image/webp", "image/avif"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    * @returns a promise that resolves once the file was written to disk
    */
-  async toFile(filePath: string, format: ExportFormat = 'png', options?: AvifConfig): Promise<void> {
+  async toFile(filePath: string, format: ExportFormat = 'image/png', options?: AvifConfig): Promise<void> {
     await this.created;
     return fs.writeFile(filePath, await this._canvas.toBuffer(format as any, options));
   }
