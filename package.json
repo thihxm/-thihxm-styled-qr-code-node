@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/loskir/styled-qr-code.git"
+    "url": "git+https://github.com/thihxm/styled-qr-code.git"
   },
   "keywords": [
     "qr",
@@ -53,10 +53,7 @@
     "logo",
     "design"
   ],
-  "author": {
-    "name": "Kirill Loskutov",
-    "email": "kl@sinker.ru"
-  },
+  "author": "thihxm",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/loskir/styled-qr-code/issues"
